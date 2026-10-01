@@ -1,0 +1,106 @@
+/* ================= EXTRA GAME ART ================= */
+
+.gta4-image {
+    background:
+        linear-gradient(
+            135deg,
+            #202020,
+            #555,
+            #111
+        );
+}
+
+.san-andreas-image {
+    background:
+        linear-gradient(
+            135deg,
+            #d9a43c,
+            #557e43,
+            #171717
+        );
+}
+
+.rdr2-image {
+    background:
+        linear-gradient(
+            135deg,
+            #9d321e,
+            #4c130c,
+            #111
+        );
+}
+
+.bully-image {
+    background:
+        linear-gradient(
+            135deg,
+            #e1d6a7,
+            #705d36,
+            #222
+        );
+}
+
+.noire-image {
+    background:
+        linear-gradient(
+            135deg,
+            #777,
+            #222,
+            #050505
+        );
+}
+
+.maxpayne-image {
+    background:
+        linear-gradient(
+            135deg,
+            #343c46,
+            #111,
+            #050505
+        );
+}
+
+.midnight-image {
+    background:
+        linear-gradient(
+            135deg,
+            #1b5b8f,
+            #111,
+            #050505
+        );
+}
+
+
+/* GAME TITLE */
+
+.gta4-image span,
+.san-andreas-image span,
+.rdr2-image span,
+.bully-image span,
+.noire-image span,
+.maxpayne-image span,
+.midnight-image span {
+
+    font-size: 42px;
+
+    font-weight: 900;
+
+    color: white;
+
+    text-shadow:
+        3px 3px 0 rgba(0,0,0,0.8);
+}
+
+
+/* LARGER GAME GRID */
+
+@media (min-width: 1000px) {
+
+    .games-grid {
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+    }
+
+}
