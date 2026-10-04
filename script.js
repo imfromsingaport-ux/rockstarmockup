@@ -1,4 +1,462 @@
-* {
+// ===============================
+// ROCKSTAR-STYLE GAME STORE
+// PAYMENT / CHECKOUT SCRIPT
+// ===============================
+
+let selectedGame = "";
+let selectedPrice = 0;
+
+// -------------------------------
+// GAME DATA
+// -------------------------------
+
+const games = {
+    gta6: {
+        name: "Grand Theft Auto VI",
+        price: 69.99
+    },
+
+    gta5: {
+        name: "Grand Theft Auto V",
+        price: 29.99
+    },
+
+    gta4: {
+        name: "Grand Theft Auto IV",
+        price: 19.99
+    },
+
+    rdr2: {
+        name: "Red Dead Redemption 2",
+        price: 59.99
+    },
+
+    rdr: {
+        name: "Red Dead Redemption",
+        price: 49.99
+    },
+
+    bully: {
+        name: "Bully",
+        price: 14.99
+    },
+
+    lanoire: {
+        name: "L.A. Noire",
+        price: 29.99
+    }
+};
+
+
+// -------------------------------
+// OPEN CHECKOUT
+// -------------------------------
+
+function openCheckout(gameID) {
+
+    const game = games[gameID];
+
+    if (!game) {
+        alert("Game not found.");
+        return;
+    }
+
+    selectedGame = game.name;
+    selectedPrice = game.price;
+
+    document.getElementById("checkoutGame").textContent =
+        game.name;
+
+    document.getElementById("checkoutPrice").textContent =
+        "$" + game.price.toFixed(2);
+
+    document.getElementById("checkoutModal").classList.add("active");
+
+    // Reset payment form
+    document.getElementById("paymentForm").reset();
+
+    document.getElementById("cardFields").style.display = "block";
+}
+
+
+// -------------------------------
+// CLOSE CHECKOUT
+// -------------------------------
+
+function closeCheckout() {
+
+    document
+        .getElementById("checkoutModal")
+        .classList.remove("active");
+}
+
+
+// -------------------------------
+// PAYMENT METHOD
+// -------------------------------
+
+function selectPayment(method) {
+
+    const buttons =
+        document.querySelectorAll(".payment-method");
+
+    buttons.forEach(button => {
+        button.classList.remove("selected");
+    });
+
+    const selectedButton =
+        document.querySelector(
+            `[data-payment="${method}"]`
+        );
+
+    if (selectedButton) {
+        selectedButton.classList.add("selected");
+    }
+
+    const cardFields =
+        document.getElementById("cardFields");
+
+    const paypalFields =
+        document.getElementById("paypalFields");
+
+    const gcashFields =
+        document.getElementById("gcashFields");
+
+    const bankFields =
+        document.getElementById("bankFields");
+
+    cardFields.style.display = "none";
+    paypalFields.style.display = "none";
+    gcashFields.style.display = "none";
+    bankFields.style.display = "none";
+
+    if (method === "card") {
+        cardFields.style.display = "block";
+    }
+
+    if (method === "paypal") {
+        paypalFields.style.display = "block";
+    }
+
+    if (method === "gcash") {
+        gcashFields.style.display = "block";
+    }
+
+    if (method === "bank") {
+        bankFields.style.display = "block";
+    }
+}
+
+
+// -------------------------------
+// PROCESS PAYMENT
+// -------------------------------
+
+function processPayment(event) {
+
+    event.preventDefault();
+
+    const activePayment =
+        document.querySelector(".payment-method.selected");
+
+    if (!activePayment) {
+        alert("Please select a payment method.");
+        return;
+    }
+
+    const paymentMethod =
+        activePayment.dataset.payment;
+
+    // Basic validation
+    if (paymentMethod === "card") {
+
+        const cardNumber =
+            document.getElementById("cardNumber").value;
+
+        const expiry =
+            document.getElementById("expiry").value;
+
+        const cvv =
+            document.getElementById("cvv").value;
+
+        if (!cardNumber || !expiry || !cvv) {
+            alert("Please complete your card details.");
+            return;
+        }
+    }
+
+    if (paymentMethod === "paypal") {
+
+        const email =
+            document.getElementById("paypalEmail").value;
+
+        if (!email) {
+            alert("Please enter your PayPal email.");
+            return;
+        }
+    }
+
+    if (paymentMethod === "gcash") {
+
+        const number =
+            document.getElementById("gcashNumber").value;
+
+        if (!number) {
+            alert("Please enter your GCash number.");
+            return;
+        }
+    }
+
+    if (paymentMethod === "bank") {
+
+        const bank =
+            document.getElementById("bankName").value;
+
+        if (!bank) {
+            alert("Please select a bank.");
+            return;
+        }
+    }
+
+    // Close checkout
+    document
+        .getElementById("checkoutModal")
+        .classList.remove("active");
+
+    // Show success message
+    showPaymentSuccess(paymentMethod);
+}
+
+
+// -------------------------------
+// PAYMENT SUCCESS
+// -------------------------------
+
+function showPaymentSuccess(method) {
+
+    const successModal =
+        document.getElementById("successModal");
+
+    const successGame =
+        document.getElementById("successGame");
+
+    const successPrice =
+        document.getElementById("successPrice");
+
+    const successMethod =
+        document.getElementById("successMethod");
+
+    successGame.textContent = selectedGame;
+
+    successPrice.textContent =
+        "$" + selectedPrice.toFixed(2);
+
+    successMethod.textContent =
+        formatPaymentName(method);
+
+    successModal.classList.add("active");
+}
+
+
+// -------------------------------
+// PAYMENT NAME
+// -------------------------------
+
+function formatPaymentName(method) {
+
+    const names = {
+        card: "Credit / Debit Card",
+        paypal: "PayPal",
+        gcash: "GCash",
+        bank: "Bank Transfer"
+    };
+
+    return names[method] || method;
+}
+
+
+// -------------------------------
+// CLOSE SUCCESS
+// -------------------------------
+
+function closeSuccess() {
+
+    document
+        .getElementById("successModal")
+        .classList.remove("active");
+}
+
+
+// -------------------------------
+// CLOSE MODALS WHEN CLICKING OUTSIDE
+// -------------------------------
+
+window.addEventListener("click", function(event) {
+
+    const checkout =
+        document.getElementById("checkoutModal");
+
+    const success =
+        document.getElementById("successModal");
+
+    if (event.target === checkout) {
+        closeCheckout();
+    }
+
+    if (event.target === success) {
+        closeSuccess();
+    }
+});
+
+
+// -------------------------------
+// ESC KEY
+// -------------------------------
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+        closeCheckout();
+        closeSuccess();
+    }
+});
+
+
+// -------------------------------
+// GAME FILTER
+// -------------------------------
+
+function filterGames(category) {
+
+    const cards =
+        document.querySelectorAll(".game");
+
+    cards.forEach(card => {
+
+        if (category === "all") {
+            card.style.display = "block";
+            return;
+        }
+
+        const gameCategory =
+            card.dataset.category;
+
+        if (gameCategory === category) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+
+    // Update filter buttons
+    document
+        .querySelectorAll(".filter-btn")
+        .forEach(button => {
+            button.classList.remove("active");
+        });
+
+    const active =
+        document.querySelector(
+            `[data-filter="${category}"]`
+        );
+
+    if (active) {
+        active.classList.add("active");
+    }
+}
+
+
+// -------------------------------
+// SEARCH
+// -------------------------------
+
+function searchGames() {
+
+    const input =
+        document.getElementById("gameSearch");
+
+    const search =
+        input.value.toLowerCase();
+
+    const cards =
+        document.querySelectorAll(".game");
+
+    cards.forEach(card => {
+
+        const name =
+            card
+                .querySelector(".game-title")
+                .textContent
+                .toLowerCase();
+
+        if (name.includes(search)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+
+
+// -------------------------------
+// AUTO CONNECT BUTTONS
+// -------------------------------
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // ORDER NOW buttons
+    document
+        .querySelectorAll(".order-btn")
+        .forEach(button => {
+
+            button.addEventListener("click", function() {
+
+                const gameID =
+                    this.dataset.game;
+
+                openCheckout(gameID);
+            });
+        });
+
+
+    // PAYMENT METHOD buttons
+    document
+        .querySelectorAll(".payment-method")
+        .forEach(button => {
+
+            button.addEventListener("click", function() {
+
+                selectPayment(
+                    this.dataset.payment
+                );
+            });
+        });
+
+
+    // Payment form
+    const paymentForm =
+        document.getElementById("paymentForm");
+
+    if (paymentForm) {
+        paymentForm.addEventListener(
+            "submit",
+            processPayment
+        );
+    }
+
+
+    // Search
+    const search =
+        document.getElementById("gameSearch");
+
+    if (search) {
+        search.addEventListener(
+            "input",
+            searchGames
+        );
+    }
+
+});* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
